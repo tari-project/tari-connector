@@ -5,9 +5,15 @@ import './TariConnectorButton.css';
 
 interface TariConnectorButtonProps {
   fullWidth?: boolean;
+  background?: string;
+  textColor?: string;
 }
 
-function TariConnectorButton({ fullWidth }: TariConnectorButtonProps) {
+function TariConnectorButton({
+  fullWidth,
+  background,
+  textColor,
+}: TariConnectorButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [fadeClass, setFadeClass] = useState('taricb-fade-in');
@@ -81,7 +87,11 @@ function TariConnectorButton({ fullWidth }: TariConnectorButtonProps) {
       <button
         className="taricb-btn taricb-primary-btn"
         onClick={openPopup}
-        style={fullWidth ? { width: '100%' } : { width: 'auto' }}
+        style={{
+          width: fullWidth ? '100%' : 'auto',
+          backgroundColor: background || '#9330FF',
+          color: textColor || '#FFFFFF',
+        }}
       >
         Connect
       </button>
