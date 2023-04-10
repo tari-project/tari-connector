@@ -23,7 +23,7 @@
   100% { opacity: 0; }
 }
 
-.taricb-text {
+.tariText {
   font-family: 'AvenirMedium', sans-serif;
   font-size: 14px;
   color: #716A78;
@@ -31,7 +31,7 @@
   text-align: center;
 }
 
-.taricb-btn-container {
+.tariBtnContainer {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -40,11 +40,11 @@
   flex-direction: column;
 }
 
-.taricb-btn-container .taricb-btn {
+.tariBtnContainer .tariBtn {
   width: 100%;
 }
 
-.taricb-btn {
+.tariBtn {
   border: none;
   padding: 10px 32px;
   text-align: center;
@@ -57,21 +57,21 @@
   height: 50px;
 }
 
-.taricb-btn:hover {  
+.tariBtn:hover {  
   filter: brightness(90%);
 }
 
-.taricb-primary-btn {
+.tariPrimaryBtn {
   background: #9330FF;
   color: white;
 }
 
-.taricb-secondary-btn {
+.tariSecondaryBtn {
   background-color: #EDECEE;
   color: #000000;
 }
 
-.taricb-popup-box {
+.tariPopupBox {
   position: fixed;
   background: #00000050;
   width: 100%;
@@ -80,7 +80,7 @@
   left: 0;
 }
  
-.taricb-box {
+.tariBox {
   position: relative;
   width: 80%;
   margin: 0 auto;
@@ -95,24 +95,24 @@
 }
 
 @media screen and (min-width: 400px) {
-  .taricb-box {
+  .tariBox {
     width: 350px;
   }
 
-  .taricb-btn-container {
+  .tariBtnContainer {
     flex-direction: row;
   }
 }
 
-.taricb-fade-in {
+.tariFadeIn {
   animation: fadeIn 0.5s;
 }
 
-.taricb-fade-out {
+.tariFadeOut {
   animation: fadeOut 0.5s;
 }
 
-.taricb-popup-container {
+.tariPopupContainer {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -121,21 +121,21 @@
   padding: 20px;
 }
 
-.taricb-qr {
+.tariQr {
   width: 100%;
   height: auto;
   box-shadow: 4px 4px 13px rgba(0, 0, 0, 0.097547);
   border-radius: 10px;
 }
 
-.taricb-logo {
+.tariLogo {
   width: 95%;
   height: auto;
 }
 
 /* Checkmark */
 
-.taricb-checkmark__circle {
+.tariCheckmarkCircle {
   stroke-dasharray: 166;
   stroke-dashoffset: 166;
   stroke-width: 2;
@@ -145,7 +145,7 @@
   animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
 }
 
-.taricb-checkmark {
+.tariCheckmark {
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -155,16 +155,17 @@
   stroke-miterlimit: 10;
   box-shadow: inset 0px 0px 0px #FFFFFF;
   animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+  margin: 0 auto;
 }
 
-.taricb-checkmark__check {
+.tariCheckmarkCheck {
   transform-origin: 50% 50%;
   stroke-dasharray: 48;
   stroke-dashoffset: 48;
   animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
 }
 
-.taricb-checkmark-container {
+.tariCheckmarkContainer {
   display: flex;
   justify-content: center;
   align-items: center;
