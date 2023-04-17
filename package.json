@@ -1,11 +1,12 @@
 {
   "name": "tari-connector",
-  "version": "0.1.0",
+  "version": "0.1.7",
   "dependencies": {
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.23",
     "@types/react": "^18.0.33",
     "@types/react-dom": "^18.0.11",
+    "qrcode.react": "^3.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
@@ -21,6 +22,7 @@
       "react-app/jest"
     ]
   },
+  "main": "./src/index.tsx",
   "browserslist": {
     "production": [
       ">0.2%",
@@ -32,5 +34,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
