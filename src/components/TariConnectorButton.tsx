@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import q from './assets/images/tari-qr.png';
 import qrcode from './assets/images/tari-qr.png';
 import tariLogo from './assets/images/tari-logo.png';
 import styles from './TariConnectorButton.module.css';
