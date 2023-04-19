@@ -1,5 +1,7 @@
 import sass from 'rollup-plugin-sass'
 import typescript from 'rollup-plugin-typescript2'
+import image from '@rollup/plugin-image'
+import css from 'rollup-plugin-import-css'
 
 import pkg from './package.json'
 
@@ -16,7 +18,9 @@ export default {
   ],
   plugins: [
     sass({ insert: true }),
-    typescript({ objectHashIgnoreUnknownHack: true })
+    typescript({ objectHashIgnoreUnknownHack: true }),
+    image(),
+    css()
   ],
   external: ['react', 'react-dom']
 }
