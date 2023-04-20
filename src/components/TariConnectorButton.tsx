@@ -10,6 +10,8 @@ export interface TariConnectorButtonProps {
   background?: string;
   textColor?: string;
   onOpen?: (tari: TariConnection) => void;
+  signalingServer?: string,
+  rtcConfig?: RTCConfiguration
 }
 
 function TariConnectorButton({
@@ -17,6 +19,8 @@ function TariConnectorButton({
   background = '#9330FF',
   textColor = '#FFFFFF',
   onOpen,
+  signalingServer,
+  rtcConfig
 }: TariConnectorButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
@@ -27,7 +31,7 @@ function TariConnectorButton({
   const openPopup = () => {
     setIsOpen(true);
     setFadeClass('tariFadeIn');
-    initTariConnection().then((tari) => {
+    initTariConnection(signalingServer, rtcConfig).then((tari) => {
       onOpen?.(tari);
       if (tari.token) {
         setTokenUrl(`tari://${tari.token}`);

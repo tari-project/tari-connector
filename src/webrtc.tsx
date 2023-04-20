@@ -1,6 +1,12 @@
 class SignaligServer {
   private _token?: string;
-  constructor() {
+  private _server_url: string
+  constructor(server_url: string | undefined) {
+    if (server_url !== undefined) {
+      this._server_url = server_url;
+    } else {
+      this._server_url = "http://localhost:9100";
+    }
   }
 
   async initToken() {
@@ -14,11 +20,11 @@ class SignaligServer {
   private async jsonRpc(method: string, token?: string, params?: any) {
     let id = 0;
     id += 1;
-    let address = 'localhost:9100';
-    let text = await (await fetch('json_rpc_address')).text();
-    if (/^\d+(\.\d+){3}:[0-9]+$/.test(text)) {
-      address = text;
-    }
+    let address = this._server_url;
+    // let text = await (await fetch('json_rpc_address')).text();
+    // if (/^\d+(\.\d+){3}:[0-9]+$/.test(text)) {
+    //   address = text;
+    // }
     let headers: { [key: string]: string } = { 'Content-Type': 'application/json' };
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
@@ -26,7 +32,7 @@ class SignaligServer {
     if (!params) {
       params = ""
     }
-    let response = await fetch(`http://${address}`, {
+    let response = await fetch(address, {
       method: 'POST',
       body: JSON.stringify({
         method: method,
@@ -75,10 +81,10 @@ export class TariConnection {
   // This is public so that user can directly set the onopen callback that will be called once the data channel is open.
   public onopen: (() => void) | undefined;
 
-  constructor(config: RTCConfiguration | undefined = undefined) {
+  constructor(signalig_server_url?: string, config?: RTCConfiguration) {
     this._peerConnection = new RTCPeerConnection(config || this.config());
     this._dataChannel = this._peerConnection.createDataChannel("tari-data");
-    this._signalingServer = new SignaligServer();
+    this._signalingServer = new SignaligServer(signalig_server_url);
     this._messageId = 0;
     this._lock = Promise.resolve();
     this._callbacks = {};
@@ -194,8 +200,8 @@ export class TariConnection {
   }
 }
 
-async function initTariConnection() {
-  let tari = new TariConnection();
+async function initTariConnection(signalig_server_url?: string, config?: RTCConfiguration) {
+  let tari = new TariConnection(signalig_server_url, config);
   await tari.init();
   return tari;
 }
