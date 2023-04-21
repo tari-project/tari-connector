@@ -10,6 +10,7 @@ export interface TariConnectorButtonProps {
   background?: string;
   textColor?: string;
   onOpen?: (tari: TariConnection) => void;
+  permissions?: TariPermissions,
   signalingServer?: string,
   rtcConfig?: RTCConfiguration
 }
@@ -19,6 +20,7 @@ function TariConnectorButton({
   background = '#9330FF',
   textColor = '#FFFFFF',
   onOpen,
+  permissions,
   signalingServer,
   rtcConfig
 }: TariConnectorButtonProps) {
@@ -34,7 +36,7 @@ function TariConnectorButton({
     initTariConnection(signalingServer, rtcConfig).then((tari) => {
       onOpen?.(tari);
       if (tari.token) {
-        setTokenUrl(`tari://${tari.token}`);
+        setTokenUrl(`tari://${tari.token}/permissions/${permissions}`);
       }
     });
   };
