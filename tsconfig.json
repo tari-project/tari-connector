@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "allowJs": false,
+    "preserveConstEnums": true,
     "declaration": true,
     "forceConsistentCasingInFileNames": true,
     "jsx": "react",
