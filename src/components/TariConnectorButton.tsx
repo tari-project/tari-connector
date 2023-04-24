@@ -1,26 +1,44 @@
+import * as React from 'react'
 import { useState } from 'react';
-import qrcode from './assets/images/tari-qr.png';
 import tariLogo from './assets/images/tari-logo.png';
 import styles from './TariConnectorButton.module.css';
+import initTariConnection, { TariConnection } from '../webrtc';
+import { QRCodeSVG } from 'qrcode.react';
 
-interface TariConnectorButtonProps {
+export interface TariConnectorButtonProps {
   fullWidth?: boolean;
   background?: string;
   textColor?: string;
+  onOpen?: (tari: TariConnection) => void;
+  permissions?: TariPermissions,
+  signalingServer?: string,
+  rtcConfig?: RTCConfiguration
 }
 
 function TariConnectorButton({
   fullWidth,
   background = '#9330FF',
   textColor = '#FFFFFF',
+  onOpen,
+  permissions,
+  signalingServer,
+  rtcConfig
 }: TariConnectorButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [fadeClass, setFadeClass] = useState('tariFadeIn');
+  const [tokenUrl, setTokenUrl] = useState("");
+  // console.log('onOpen', onOpen);
 
   const openPopup = () => {
     setIsOpen(true);
     setFadeClass('tariFadeIn');
+    initTariConnection(signalingServer, rtcConfig).then((tari) => {
+      onOpen?.(tari);
+      if (tari.token) {
+        setTokenUrl(`tari://${tari.token}/permissions/${permissions}`);
+      }
+    });
   };
 
   const closePopup = () => {
@@ -38,7 +56,7 @@ function TariConnectorButton({
   };
 
   const handleCopy = () => {
-    navigator.clipboard.writeText('tari://localhost');
+    navigator.clipboard.writeText(tokenUrl);
     setIsCopied(true);
     setFadeClass('');
     setTimeout(() => {
@@ -101,7 +119,7 @@ function TariConnectorButton({
               <p className={styles.tariText}>
                 Scan the QR code or copy the link below to connect your wallet
               </p>
-              <img src={qrcode} alt="qr code" className={styles.tariQr} />
+              <QRCodeSVG value={tokenUrl} />
               <div className={styles.tariBtnContainer}>
                 <button
                   className={[styles.tariBtn, styles.tariPrimaryBtn].join(' ')}
