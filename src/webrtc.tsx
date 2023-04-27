@@ -166,7 +166,7 @@ export class TariConnection {
   }
 
   // If the last parameter has timeout property e.g. {timeout:1000}, it set the timeout for this call.
-  async sendMessage(method: string, ...args: any[]) {
+  async sendMessage(method: string, token: string, ...args: any[]) {
     var timeout = 0;
     if (args.length > 0) {
       console.log(args.length)
@@ -190,7 +190,7 @@ export class TariConnection {
         }, timeout)
       }
       // Make the actual call to the wallet daemon
-      this._dataChannel.send(JSON.stringify({ id: messageId, method, params: JSON.stringify(args) }));
+      this._dataChannel.send(JSON.stringify({ id: messageId, method, token, params: JSON.stringify(args) }));
     });
   }
 
