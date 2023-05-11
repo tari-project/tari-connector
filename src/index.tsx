@@ -1,4 +1,8 @@
 export { default as TariConnectorButton } from "./components/TariConnectorButton";
 export { default as initTariConnection, TariConnection } from "./webrtc";
 
-// export type { TariConnectorProps } from "./components/TariConnectorButton";
+export default function test() {
+  console.log("test")
+}
+
+export * from './tari_permissions'
