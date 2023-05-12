@@ -4,6 +4,7 @@ import tariLogo from './assets/images/tari-logo.png';
 import styles from './TariConnectorButton.module.css';
 import initTariConnection, { TariConnection } from '../webrtc';
 import { QRCodeSVG } from 'qrcode.react';
+import { TariPermissions } from '../tari_permissions';
 
 export interface TariConnectorButtonProps {
   fullWidth?: boolean;
@@ -11,6 +12,7 @@ export interface TariConnectorButtonProps {
   textColor?: string;
   onOpen?: (tari: TariConnection) => void;
   permissions?: TariPermissions,
+  optional_permissions?: TariPermissions,
   signalingServer?: string,
   rtcConfig?: RTCConfiguration
 }
@@ -21,6 +23,7 @@ function TariConnectorButton({
   textColor = '#FFFFFF',
   onOpen,
   permissions,
+  optional_permissions,
   signalingServer,
   rtcConfig
 }: TariConnectorButtonProps) {
@@ -28,15 +31,18 @@ function TariConnectorButton({
   const [isCopied, setIsCopied] = useState(false);
   const [fadeClass, setFadeClass] = useState('tariFadeIn');
   const [tokenUrl, setTokenUrl] = useState("");
+  const [tari, setTari] = useState<any>();
   // console.log('onOpen', onOpen);
 
   const openPopup = () => {
     setIsOpen(true);
     setFadeClass('tariFadeIn');
     initTariConnection(signalingServer, rtcConfig).then((tari) => {
+      setTari(tari);
       onOpen?.(tari);
       if (tari.token) {
-        setTokenUrl(`tari://${tari.token}/permissions/${permissions}`);
+        console.log("settoken", permissions, JSON.stringify(permissions))
+        setTokenUrl(`tari://${tari.token}/${JSON.stringify(permissions)}/${JSON.stringify(optional_permissions)}`);
       }
     });
   };

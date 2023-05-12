@@ -42,6 +42,12 @@ class SignaligServer {
       }),
       headers: headers
     });
+    console.log("aaa ", JSON.stringify({
+      method: method,
+      jsonrpc: '2.0',
+      id: id,
+      params: params,
+    }));
     let json = await response.json();
     if (json.error) {
       throw json.error;
@@ -99,6 +105,7 @@ export class TariConnection {
     // Setup our receiving end
     this._dataChannel.onmessage = (message) => {
       let response = JSON.parse(message.data)
+      console.log('response', response)
       // The response should contain id, to identify the Promise.resolve, that is waiting for this result
       let [resolve, reject] = this._callbacks[response.id];
       delete this._callbacks[response.id];
@@ -118,7 +125,10 @@ export class TariConnection {
       console.log("Data channel is open!");
     };
     this._peerConnection.onicecandidate = (event) => {
+      console.log('event', event);
       if (event?.candidate) {
+        console.log("ICE ", event.candidate)
+        console.log("ICE ", typeof event.candidate)
         // Store the ice candidates, so the other end can add them
         this._signalingServer.storeIceCandidate(event.candidate).then((resp) => {
           // This should be removed before the release, but it's good for debugging.
@@ -166,7 +176,7 @@ export class TariConnection {
   }
 
   // If the last parameter has timeout property e.g. {timeout:1000}, it set the timeout for this call.
-  async sendMessage(method: string, ...args: any[]) {
+  async sendMessage(method: string, token: string, ...args: any[]) {
     var timeout = 0;
     if (args.length > 0) {
       console.log(args.length)
@@ -190,7 +200,7 @@ export class TariConnection {
         }, timeout)
       }
       // Make the actual call to the wallet daemon
-      this._dataChannel.send(JSON.stringify({ id: messageId, method, params: JSON.stringify(args) }));
+      this._dataChannel.send(JSON.stringify({ id: messageId, method, token, params: JSON.stringify(args) }));
     });
   }
 
