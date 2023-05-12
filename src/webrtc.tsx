@@ -2,6 +2,7 @@ class SignaligServer {
   private _token?: string;
   private _server_url: string
   constructor(server_url: string | undefined) {
+    console.log(server_url)
     if (server_url !== undefined) {
       this._server_url = server_url;
     } else {
@@ -21,10 +22,6 @@ class SignaligServer {
     let id = 0;
     id += 1;
     let address = this._server_url;
-    // let text = await (await fetch('json_rpc_address')).text();
-    // if (/^\d+(\.\d+){3}:[0-9]+$/.test(text)) {
-    //   address = text;
-    // }
     let headers: { [key: string]: string } = { 'Content-Type': 'application/json' };
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
@@ -42,12 +39,6 @@ class SignaligServer {
       }),
       headers: headers
     });
-    console.log("aaa ", JSON.stringify({
-      method: method,
-      jsonrpc: '2.0',
-      id: id,
-      params: params,
-    }));
     let json = await response.json();
     if (json.error) {
       throw json.error;
