@@ -1,3 +1,5 @@
+import { TariPermissions } from "./tari_permissions";
+
 class SignaligServer {
   private _token?: string;
   private _server_url: string
@@ -10,8 +12,8 @@ class SignaligServer {
     }
   }
 
-  async initToken() {
-    this._token = await this.authLogin()
+  async initToken(permissions: TariPermissions) {
+    this._token = await this.authLogin(permissions)
   }
 
   public get token() {
@@ -46,8 +48,8 @@ class SignaligServer {
     return json.result;
   }
 
-  private async authLogin() {
-    return await this.jsonRpc("auth.login");
+  private async authLogin(permissions: TariPermissions) {
+    return await this.jsonRpc("auth.login", undefined, permissions);
   }
 
   async storeIceCandidate(ice_candidate: RTCIceCandidate) {
@@ -91,8 +93,8 @@ export class TariConnection {
     return this._signalingServer.token;
   }
 
-  async init() {
-    await this._signalingServer.initToken();
+  async init(permissions: TariPermissions) {
+    await this._signalingServer.initToken(permissions);
     // Setup our receiving end
     this._dataChannel.onmessage = (message) => {
       let response = JSON.parse(message.data)
@@ -201,9 +203,9 @@ export class TariConnection {
   }
 }
 
-async function initTariConnection(signalig_server_url?: string, config?: RTCConfiguration) {
+async function initTariConnection(permissions: TariPermissions, signalig_server_url?: string, config?: RTCConfiguration) {
   let tari = new TariConnection(signalig_server_url, config);
-  await tari.init();
+  await tari.init(permissions);
   return tari;
 }
 

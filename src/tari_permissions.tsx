@@ -170,6 +170,14 @@ export class TariPermissionAccountBalance {
     return { "AccountBalance": this.value }
   }
 }
+
+export class TariPermissionAccountInfo {
+  constructor() {}
+  toJSON() {
+    return "AccountInfo"
+  }
+}
+
 export class TariPermissionAccountList {
   private value?: ComponentAddress | null;
   constructor(value?: ComponentAddress) {
@@ -188,13 +196,24 @@ export class TariPermissionAccountList {
     }
   }
 }
+export class TariPermissionTransactionGet {
+  constructor() {}
+  toJSON() {
+    return "TransactionGet"
+  }
+}
 export class TariPermissionTransactionSend {
-  private value: SubstateAddress;
-  constructor(value: SubstateAddress) {
+  private value?: SubstateAddress;
+  constructor(value?: SubstateAddress) {
     this.value = value;
   }
   toJSON() {
-    return { "TransactionSend": this.value }
+    console.log('JSON TariPermissionTransactionSend', this.value)
+    if (this.value === undefined) {
+      return { "TransactionSend": null }
+    } else {
+      return { "TransactionSend": this.value }
+    }
   }
 }
 
@@ -220,7 +239,7 @@ export class TariPermissionNftGetOwnershipProof {
   }
 }
 
-export type TariPermission = TariPermissionNftGetOwnershipProof | TariPermissionAccountBalance | TariPermissionAccountList | TariPermissionTransactionSend | TariPermissionGetNft;
+export type TariPermission = TariPermissionNftGetOwnershipProof | TariPermissionAccountBalance | TariPermissionAccountInfo | TariPermissionAccountList | TariPermissionTransactionGet | TariPermissionTransactionSend | TariPermissionGetNft;
 
 export class TariPermissions {
   private permissions: TariPermission[];
@@ -231,6 +250,10 @@ export class TariPermissions {
 
   addPermission(permission: TariPermission) {
     this.permissions.push(permission);
+  }
+
+  addPermissions(other: TariPermissions) {
+    this.permissions.push(...other.permissions);
   }
 
   toJSON() {
