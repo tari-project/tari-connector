@@ -15,6 +15,7 @@ export interface TariConnectorButtonProps {
   optional_permissions?: TariPermissions,
   signalingServer?: string,
   rtcConfig?: RTCConfiguration
+  name?: string,
 }
 
 function TariConnectorButton({
@@ -25,7 +26,8 @@ function TariConnectorButton({
   permissions = new TariPermissions(),
   optional_permissions = new TariPermissions(),
   signalingServer,
-  rtcConfig
+  rtcConfig,
+  name,
 }: TariConnectorButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
@@ -45,7 +47,7 @@ function TariConnectorButton({
       onOpen?.(tari);
       if (tari.token) {
         console.log("settoken", permissions, JSON.stringify(permissions))
-        setTokenUrl(`tari://${tari.token}/${JSON.stringify(permissions)}/${JSON.stringify(optional_permissions)}`);
+        setTokenUrl(`tari://${name && encodeURIComponent(name) || ''}/${tari.token}/${JSON.stringify(permissions)}/${JSON.stringify(optional_permissions)}`);
       }
     });
   };
