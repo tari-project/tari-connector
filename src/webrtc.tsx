@@ -166,6 +166,10 @@ export class TariConnection {
     return messageId;
   }
 
+  public isConnected() {
+    return this._dataChannel.readyState === "open"
+  }
+
   // If the last parameter has timeout property e.g. {timeout:1000}, it set the timeout for this call.
   async sendMessage(method: string, token: string, ...args: any[]) {
     var timeout = 0;
