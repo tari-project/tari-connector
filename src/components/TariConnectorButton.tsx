@@ -22,8 +22,8 @@ function TariConnectorButton({
   background = '#9330FF',
   textColor = '#FFFFFF',
   onOpen,
-  permissions,
-  optional_permissions,
+  permissions = new TariPermissions(),
+  optional_permissions = new TariPermissions(),
   signalingServer,
   rtcConfig
 }: TariConnectorButtonProps) {
@@ -33,11 +33,14 @@ function TariConnectorButton({
   const [tokenUrl, setTokenUrl] = useState("");
   const [tari, setTari] = useState<any>();
   // console.log('onOpen', onOpen);
+  const all_permissions = new TariPermissions();
+  all_permissions.addPermissions(permissions);
+  all_permissions.addPermissions(optional_permissions);
 
   const openPopup = () => {
     setIsOpen(true);
     setFadeClass('tariFadeIn');
-    initTariConnection(signalingServer, rtcConfig).then((tari) => {
+    initTariConnection(all_permissions, signalingServer, rtcConfig).then((tari) => {
       setTari(tari);
       onOpen?.(tari);
       if (tari.token) {
