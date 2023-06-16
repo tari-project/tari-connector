@@ -154,7 +154,7 @@ export class TariConnection {
     // We add all the ice candidates to connect, the other end is doing the same with our ice candidates
     iceCandidates = JSON.parse(iceCandidates);
     for (const iceCandidate of iceCandidates) {
-      this._peerConnection.addIceCandidate(JSON.parse(iceCandidate));
+      this._peerConnection.addIceCandidate(iceCandidate);
     }
   }
 
