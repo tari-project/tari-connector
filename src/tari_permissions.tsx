@@ -6,6 +6,12 @@ export class Hash {
   toJSON() {
     return this.value;
   }
+  toString() {
+    return this.value.map((v) => v.toString(16).padStart(2, 0)).join("")
+  }
+  toArray() {
+    return this.value;
+  }
 }
 
 export enum TAG {
@@ -27,6 +33,12 @@ export class Tagged {
   toJSON() {
     return { "@@TAGGED@@": [this.tag, this.value] }
   }
+  toString() {
+    return this.value.toString();
+  }
+  toArray() {
+    return this.value.toArray();
+  }
 }
 
 
@@ -37,6 +49,12 @@ export class ResourceAddress {
   }
   toJSON() {
     return this.tagged.toJSON();
+  }
+  toString() {
+    return `resource_${this.tagged.toString()}`
+  }
+  toArray() {
+    return this.tagged.toArray()
   }
 }
 
@@ -90,6 +108,9 @@ export class NonFungibleAddressContents {
   toJSON() {
     return { "resource_address": this.resource_address, "id": this.id }
   }
+  toString() {
+    return {"resource_address": this.resource_address.toArray(), "id": this.id}
+  }
 }
 
 export class NonFungibleAddress {
@@ -98,7 +119,11 @@ export class NonFungibleAddress {
     this.tagged = new Tagged(TAG.NonFungibleAddress, value)
   }
   toJSON() {
+    console.log(this.tagged)
     return this.tagged.toJSON();
+  }
+  toString() {
+    return this.tagged.toString();
   }
 }
 
@@ -146,13 +171,13 @@ export class SubstateAddress {
     if (this.value instanceof ComponentAddress) {
       return { "Component": this.value }
     } else if (this.value instanceof ResourceAddress) {
-      return { "Resource": this.value }
+      return { "Resource": this.value.toString() }
     } else if (this.value instanceof VaultId) {
       return { "Vault": this.value }
     } else if (this.value instanceof UnclaimedConfidentialOutputAddress) {
       return { "UnclaimedConfidentialOutput": this.value }
     } else if (this.value instanceof NonFungibleAddress) {
-      return { "NonFungible": this.value }
+      return { "NonFungible": this.value.toString() }
     } else if (this.value instanceof NonFungibleIndexAddress) {
       return { "NonFungibleIndex": this.value }
     }
