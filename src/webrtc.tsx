@@ -77,6 +77,7 @@ export class TariConnection {
   private _lock: Promise<void>;
   private _callbacks: { [key: string]: any[] };
   private _offer?: RTCSessionDescriptionInit;
+  private _walletToken: string | undefined;
   // This is public so that user can directly set the onopen callback that will be called once the data channel is open.
   public onopen: (() => void) | undefined;
 
@@ -90,6 +91,9 @@ export class TariConnection {
   }
 
   public get token() {
+    if (this._walletToken) {
+      return this._walletToken;  
+    }
     return this._signalingServer.token;
   }
 
@@ -110,12 +114,21 @@ export class TariConnection {
       }
     };
     this._dataChannel.onopen = () => {
-      // This is currently just a user notification, but we can use the pc signaling state to know if it is open.
-      if (this.onopen) {
-        this.onopen();
-      }
       // This should be removed before the release, but it's good for debugging.
       console.log("Data channel is open!");
+
+      this.sendMessage("get.token", this._signalingServer.token)
+        .then(walletToken => {
+          console.log("Wallet JWT received: ", walletToken);
+          this._walletToken = walletToken;
+
+          // This is currently just a user notification, but we can use the pc signaling state to know if it is open.
+          if (this.onopen) {
+            this.onopen();
+          }})
+        .catch(err => {
+          console.log({err});
+        });
     };
     this._peerConnection.onicecandidate = (event) => {
       console.log('event', event);
