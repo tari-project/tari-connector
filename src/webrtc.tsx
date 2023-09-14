@@ -80,6 +80,7 @@ export class TariConnection {
   private _walletToken: string | undefined;
   // This is public so that user can directly set the onopen callback that will be called once the data channel is open.
   public onopen: (() => void) | undefined;
+  public onConnection: (() => void) | undefined;
 
   constructor(signalig_server_url?: string, config?: RTCConfiguration) {
     this._peerConnection = new RTCPeerConnection(config || this.config());
@@ -97,7 +98,8 @@ export class TariConnection {
     return this._signalingServer.token;
   }
 
-  async init(permissions: TariPermissions) {
+  async init(permissions: TariPermissions, onConnection: (() => void) | undefined) {
+    this.onConnection = onConnection;
     await this._signalingServer.initToken(permissions);
     // Setup our receiving end
     this._dataChannel.onmessage = (message) => {
@@ -118,13 +120,12 @@ export class TariConnection {
       console.log("Data channel is open!");
 
       this.sendMessage("get.token", this._signalingServer.token)
-        .then(walletToken => {
+        .then((walletToken: string) => {
           console.log("Wallet JWT received: ", walletToken);
           this._walletToken = walletToken;
 
-          // This is currently just a user notification, but we can use the pc signaling state to know if it is open.
-          if (this.onopen) {
-            this.onopen();
+          if (this.onConnection) {
+            this.onConnection();
           }})
         .catch(err => {
           console.log({err});
@@ -150,25 +151,44 @@ export class TariConnection {
     this._signalingServer.storeOffer(this._offer).then((resp) => {
       // This should be removed before the release, but it's good for debugging.
       console.log("Offer stored", resp);
-    })
+    });
+    await this.signalingServerPolling();
   }
 
-  // We should come up with a solution where the signaling server will send us a message that the other end is connected. 
-  // And this should be called automatically after the notification.
-  async setAnswer() {
+  private async setAnswer() {
     // This is called once the other end got the offer and ices and created and store an answer and its ice candidates
     // We get its answer sdp
     let sdp = JSON.parse((await this._signalingServer.getAnswer()));
+
     // And its ice candidates
     let iceCandidates = await this._signalingServer.getIceCandidates();
+
     // For us the answer is remote sdp
     let answer = new RTCSessionDescription({ sdp, type: "answer" });
     this._peerConnection.setRemoteDescription(answer);
+
     // We add all the ice candidates to connect, the other end is doing the same with our ice candidates
     iceCandidates = JSON.parse(iceCandidates);
     for (const iceCandidate of iceCandidates) {
       this._peerConnection.addIceCandidate(iceCandidate);
     }
+  }
+
+  private async signalingServerPolling() {
+    // no need to keep retrying if we are already connected to the wallet
+    if (this._peerConnection.connectionState === "connected") {
+      return;
+    }
+
+    try {
+      await this.setAnswer();
+    } catch (error) {
+      // we don't need to do anything on error, as the execution will be retried later
+      console.error(error);
+    }
+       
+    // try again later
+    setTimeout(async () => {await this.signalingServerPolling()}, 2000);
   }
 
   private async getNextMessageId() {
@@ -220,9 +240,9 @@ export class TariConnection {
   }
 }
 
-async function initTariConnection(permissions: TariPermissions, signalig_server_url?: string, config?: RTCConfiguration) {
+async function initTariConnection(permissions: TariPermissions, signalig_server_url?: string, config?: RTCConfiguration, onConnection?: (() => void) | undefined) {
   let tari = new TariConnection(signalig_server_url, config);
-  await tari.init(permissions);
+  await tari.init(permissions, onConnection);
   return tari;
 }
 

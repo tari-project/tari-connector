@@ -11,6 +11,7 @@ export interface TariConnectorButtonProps {
   background?: string;
   textColor?: string;
   onOpen?: (tari: TariConnection) => void;
+  onConnection?: () => void;
   permissions?: TariPermissions,
   optional_permissions?: TariPermissions,
   signalingServer?: string,
@@ -23,6 +24,7 @@ function TariConnectorButton({
   background = '#9330FF',
   textColor = '#FFFFFF',
   onOpen,
+  onConnection,
   permissions = new TariPermissions(),
   optional_permissions = new TariPermissions(),
   signalingServer,
@@ -42,7 +44,7 @@ function TariConnectorButton({
   const openPopup = () => {
     setIsOpen(true);
     setFadeClass('tariFadeIn');
-    initTariConnection(all_permissions, signalingServer, rtcConfig).then((tari) => {
+    initTariConnection(all_permissions, signalingServer, rtcConfig, onConnection).then((tari) => {
       setTari(tari);
       onOpen?.(tari);
       if (tari.token) {
