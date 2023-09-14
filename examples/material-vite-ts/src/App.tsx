@@ -1,15 +1,13 @@
 import * as React from 'react';
-import { Button, Box, Link, Typography, Container } from '@mui/material';
+import { Box, Typography, Container } from '@mui/material';
 import { TariConnection, TariConnectorButton } from 'tari-connector/src/index';
 import {
 	ResourceAddress,
 	Hash,
-	TariPermissionNftGetOwnershipProof,
 	TariPermissions,
 	TariPermissionAccountBalance,
 	TariPermissionAccountList,
 	SubstateAddress,
-	NonFungibleIndexAddress,
 	NonFungibleAddress,
 	NonFungibleAddressContents,
 	NonFungibleId,
@@ -39,8 +37,8 @@ function Connector() {
 		setTari(tari);
 		window.tari = tari;
 	};
-	const setAnswer = () => {
-		tari?.setAnswer();
+	const onConnection = () => {
+		console.log("Connected to the wallet daemon");
 	};
 	let address = import.meta.env.VITE_SIGNALING_SERVER_ADDRESS || "http://localhost:9100";
 	let permissions = new TariPermissions();
@@ -65,8 +63,8 @@ function Connector() {
 				permissions={permissions}
 				optional_permissions={optional_permissions}
 				onOpen={onOpen}
+				onConnection={onConnection}
 			/>
-			{tari ? <button onClick={setAnswer}>SetAnswer</button> : null}
 		</>
 	);
 }
